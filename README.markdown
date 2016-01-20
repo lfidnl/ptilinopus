@@ -42,7 +42,8 @@ Fetch groups:
 Adding a subscriber:
 
     api = Primary::API.new("api_key")
-    api.call(:post, "subscribers", {email: 'test_email@test.com', id: 123456})
+    api.call(:post, "subscribers/123456", {email: 'test_email@test.com'})
+    # where 123456 is a id of list
 
 List of all methods you can find here [http://docs.mailerlite.com/]
 
