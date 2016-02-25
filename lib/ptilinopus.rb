@@ -5,7 +5,7 @@ require "ptilinopus/errors"
 module Ptilinopus
   class API
     include HTTParty
-    DEFAULT_HEADER = {"Content-Type" => "application/x-www-form-urlencoded"}
+    DEFAULT_HEADER = {"Content-Type" => "application/json"}
     API_PATH = '/api/v1/'
     attr_accessor :api_key
     default_timeout 10 # HTTParty timeout
@@ -19,7 +19,7 @@ module Ptilinopus
       ensure_api_key(params)
 
       params = params.merge({apiKey: @api_key})
-      response = self.class.send(type, API_PATH + method, body: params, headers: DEFAULT_HEADER, query_string_normalizer: query_string_normalizer)
+      response = self.class.send(type, API_PATH + method, body: params.to_json, headers: DEFAULT_HEADER)
 
       if response.code != 200
         case response.code
@@ -38,15 +38,6 @@ module Ptilinopus
     end
 
     private
-
-    # FIXME Some methods of Mailerlite doesn't accept encoded emails
-    def query_string_normalizer
-      proc { |query|
-        query.map do |key, value|
-          "#{key}=#{value}"
-        end.join('&')
-      }
-    end
 
     def ensure_api_key(params)
       unless @api_key || params[:apiKey]
